@@ -42,35 +42,57 @@
 
     
     <script>
-      document.getElementById('sendButton').addEventListener('click', function() {
-        // Get selected department
-        var department = document.getElementById('cbranch').value;
+   
+  document.getElementById('sendButton').addEventListener('click', function() {
+    // Get selected department
+    var department = document.getElementById('cbranch').value;
 
-        // Get subject of the circular
-        var subject = document.getElementById('csubject').value;
-        var txt = document.getElementById('ctext').value;
+    // Get subject of the circular
+    var subject = document.getElementById('csubject').value;
+    var txt = document.getElementById('ctext').value;
 
-        // Get current date
-        var currentDate = new Date().toLocaleDateString();
+    // Get current date
+    var currentDate = new Date().toLocaleDateString();
 
-        // Create PDF
-        const { jsPDF } = window.jspdf;
-      const doc = new jsPDF();
-     
-      doc.setFontSize(18).setFont(undefined, 'bold');
-      doc.text("CIRCULAR" ,75,10)
-      doc.setFontSize(15).setFont(undefined, 'normal');
-     
-        doc.text('Department: ' + department, 10, 30);
-        doc.text('Date: ' + currentDate, 150, 20);
-        doc.text('Subject: ' + subject, 10, 40);
-        doc.text(  txt, 10, 50);
-        // doc.save('circular.pdf');
+    // Create PDF
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
 
-        const blob = doc.output("blob");
-      const blobURL = URL.createObjectURL(blob);
-      window.open(blobURL, "_blank");
-      });
+    doc.setFontSize(18).setFont(undefined, 'bold');
+    doc.text("CIRCULAR", 75, 10);
+    doc.setFontSize(15).setFont(undefined, 'normal');
+
+    doc.setFontSize(18).setFont(undefined, 'bold');
+    doc.text("ANDHRA UNIVERSITY", 60, 25);
+    doc.setFontSize(15).setFont(undefined, 'normal');
+
+    let yPos = 40;
+    doc.text('Department: ' + department, 10, yPos);
+    yPos += 10;
+    doc.text('Date: ' + currentDate, 150, yPos);
+    yPos += 10;
+    doc.setFontSize(15).setFont(undefined, 'bold');
+    doc.text('Subject: ' + subject, 10, yPos);
+    doc.setFontSize(13).setFont(undefined, 'normal');
+    yPos += 10;
+
+    // Wrap text
+    const lines = doc.splitTextToSize(txt, 190); // 190 mm wide, and a margin of 10 mm.
+    lines.forEach(function(line) {
+      if (yPos > 280) { // Check to add new page
+        doc.addPage();
+        yPos = 20; // Reset y position
+      }
+      doc.text(line, 10, yPos);
+      yPos += 10;
+    });
+
+    const blob = doc.output("blob");
+    const blobURL = URL.createObjectURL(blob);
+    window.open(blobURL, "_blank");
+  });
+
+
     </script>
 </body>
 </html>

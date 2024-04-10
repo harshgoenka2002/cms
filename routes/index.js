@@ -60,6 +60,10 @@ router.get('/courses-login', (req, res) => {
 
   res.render("courseslogin",{error:""})
 });
+router.get('/circulars-login', (req, res) => {
+
+  res.render("circularslogin",{error:""})
+});
 
 router.post('/login', async (req, res) => {
   const { username, password } = req.body;
@@ -86,6 +90,23 @@ router.post('/clogin', async (req, res) => {
     if (user) {
       // Credentials are correct
       res.redirect('/courses-and-materials_admin');
+    } else {
+      // Credentials are incorrect
+      res.render('login', { error: 'Invalid username or password.' });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+router.post('/circularslogin', async (req, res) => {
+  const { username, password } = req.body;
+  try {
+    // Find user by username and password
+    const user = await userModel.findOne({ username, password });
+    if (user) {
+      // Credentials are correct
+      res.redirect('/circular');
     } else {
       // Credentials are incorrect
       res.render('login', { error: 'Invalid username or password.' });
